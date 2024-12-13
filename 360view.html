@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <title>eiao360</title>
+    <style>
+        /* estilo para la info */
+        #info-box {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            background: white;
+            padding: 20px;
+            border: 2px solid black;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+        }
+
+        #close-info {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #close-info:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- aframe scene-->
+    <a-scene>
+        <!-- div para la info -->
+        <div id="info-box">
+            <p id="info-text"></p>
+            <button id="close-info">Cerrar</button>
+        </div>
+
+        <!-- entrada del lugar -->
+        <a-sky id="panorama" src="360images/startDepts/start.jpg"></a-sky>
+    
+        <!-- Hotspots -->
+        <a-entity id="hotspot1" geometry="primitive: sphere; radius: 0.5"
+                  position="-2 1.5 -3" material="color: purple"></a-entity>
+    
+        <a-entity id="hotspot2" geometry="primitive: sphere; radius: 0.5"
+                  position="2 1.5 -3" material="color: pink"></a-entity>
+    </a-scene>
+
+    <!-- js para manejar ambos hotspots -->
+    <script>
+        // info
+        const hotspots = {
+            hotspot1: {
+                info: "hola administrador contable",
+                image: "360images/adminContable/adminContable.jpg"
+            },
+            hotspot2: {
+                info: "hola area de refrigeracion",
+                image: "360images/aireAcondicionado/aireAcondicionado.jpg"
+            }
+        };
+
+        // eventos
+        function setupHotspots() {
+            Object.keys(hotspots).forEach(id => {
+                const hotspotElement = document.getElementById(id);
+
+                if (hotspotElement) {
+                    hotspotElement.addEventListener("click", () => {
+                        const info = hotspots[id].info;
+                        const image = hotspots[id].image;
+
+                        // 1. mostrar la info
+                        const infoBox = document.getElementById("info-box");
+                        const infoText = document.getElementById("info-text");
+
+                        infoText.innerText = info;
+                        infoBox.style.display = "block";
+
+                        // 2. ir al lugar de la info
+                        setTimeout(() => {
+                            const panorama = document.getElementById("panorama");
+                            panorama.setAttribute("src", image);
+
+                            // ocultar la info
+                            infoBox.style.display = "none";
+                        }, 2000);
+                    });
+                } else {
+                    console.error(`hotspot con ID ${id} no encontrado.`);
+                }
+            });
+        }
+
+        // btn de cierrex
+        document.getElementById("close-info").addEventListener("click", () => {
+            document.getElementById("info-box").style.display = "none";
+        });
+
+        // generar hotspots
+        document.addEventListener("DOMContentLoaded", setupHotspots);
+    </script>
+</body>
+</html>
